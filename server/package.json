@@ -1,0 +1,12 @@
+{
+    "name": "the-hat-server",
+    "private": true,
+    "version": "1.0.0",
+    "description": "Simple hat engine",
+    "main": "app.js",
+    "author": "Alexandra Gessen (algessen@gmail.com)",
+    "license": "MIT",
+    "dependencies": {
+        "express": "^4.17.1"
+    }
+}
