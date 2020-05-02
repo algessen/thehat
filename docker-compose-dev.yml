@@ -15,18 +15,20 @@ services:
     stdin_open: true
     depends_on:
       - server
+
   server:
     container_name: server
     build:
-      context: .
-      dockerfile: ./docker/server-dev
+      context: ./server/
+      dockerfile: Dockerfile_debug
+    restart: always
     ports:
-      - "3000:3000"
-    volumes:
-      - ./server:/server
-      - /server/node_modules
+      - "8080:8080"
+      - "5005:5005"
     depends_on:
       - redis
+    command: java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dspring.redis.host=redis /opt/server/the-hat-game-server.jar
+
   redis:
     container_name: redis
     image: redis:alpine

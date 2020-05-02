@@ -1,0 +1,6 @@
+FROM openjdk:11
+ENV PROJECT_DIR=/opt/server
+RUN mkdir -p $PROJECT_DIR
+COPY ./target/*.jar $PROJECT_DIR/the-hat-game-server.jar
+WORKDIR $PROJECT_DIR
+EXPOSE 8080 5005

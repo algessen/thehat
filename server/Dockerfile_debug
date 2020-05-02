@@ -1,0 +1,20 @@
+FROM maven:3.6.3-jdk-11 AS MAVEN_TOOL_CHAIN
+
+ENV PROJECT_DIR_MAVEN=/tmp/server
+WORKDIR $PROJECT_DIR_MAVEN
+
+COPY ./pom.xml $PROJECT_DIR_MAVEN
+RUN mvn -B -f pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency:go-offline
+
+COPY ./src/ $PROJECT_DIR_MAVEN/src
+RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml package -Dmaven.test.skip=true
+
+FROM openjdk:11
+
+ENV PROJECT_DIR=/opt/server
+ENV PROJECT_DIR_MAVEN=/tmp/server
+RUN mkdir -p $PROJECT_DIR
+WORKDIR $PROJECT_DIR
+COPY --from=MAVEN_TOOL_CHAIN $PROJECT_DIR_MAVEN/target/*.jar $PROJECT_DIR/the-hat-game-server.jar
+
+EXPOSE 8080 5005
