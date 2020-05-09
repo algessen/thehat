@@ -1,7 +1,6 @@
 package ru.alaric.thehatgameserver.controllers;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.alaric.thehatgameserver.testutils.TestUtils.createTestGameJson;
 
 @WebMvcTest(GameController.class)
 class GameControllerTest {
@@ -34,22 +33,17 @@ class GameControllerTest {
 
     private static final int PLAYERS_COUNT = 3;
     private static final int WORDS_FOR_PLAYER = 5;
-    private static final String CODE_WORD = "CODE_WORD";
+    private static final int TURN_TIME = 20;
 
-    private JSONObject createTestGameJson() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("playersCount", PLAYERS_COUNT);
-        jsonObject.put("wordsForPlayer", WORDS_FOR_PLAYER);
-        return jsonObject;
-    }
+    private static final String CODE_WORD = "CODE_WORD";
 
     @Test
     void shouldCreateGame() throws Exception {
-        JSONObject jsonObject = createTestGameJson();
-        GameDto gameDto = new GameDto(PLAYERS_COUNT, WORDS_FOR_PLAYER);
-        Game game = mock(Game.class);
+        JSONObject jsonObject = createTestGameJson(PLAYERS_COUNT, WORDS_FOR_PLAYER, TURN_TIME);
+        GameDto gameDto = new GameDto(PLAYERS_COUNT, WORDS_FOR_PLAYER, TURN_TIME);
+        Game game = Game.createNew(gameDto, CODE_WORD);
+        game.setId(101L);
         when(gameService.createNew(eq(gameDto))).thenReturn(game);
-        when(game.getCodeWord()).thenReturn(CODE_WORD);
 
         mockMvc.perform(post("/game")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -64,6 +58,7 @@ class GameControllerTest {
                                 .buildAndExpand(CODE_WORD)
                                 .toUriString()
                 ))
+                .andExpect(jsonPath("$.codeWord").value(CODE_WORD))
                 .andReturn();
     }
 

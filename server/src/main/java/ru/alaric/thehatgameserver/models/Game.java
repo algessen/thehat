@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
+import ru.alaric.thehatgameserver.dto.GameDto;
 
 import java.io.Serializable;
 
@@ -18,11 +19,22 @@ public class Game implements Serializable {
     private Long id;
     private int playersCount;
     private int wordsForPlayer;
+    private int turnTime;
     @Indexed
     private String codeWord;
 
-    public static Game createNew(int playersCount, int wordsForPlayer, String codeWord) {
-        return new Game(null, playersCount, wordsForPlayer, codeWord);
+    public static Game createNew(int playersCount,
+                                 int wordsForPlayer,
+                                 int turnTime,
+                                 String codeWord) {
+        return new Game(null, playersCount, wordsForPlayer, turnTime, codeWord);
+    }
+
+    public static Game createNew(GameDto gameDto, String codeWord) {
+        return createNew(gameDto.getPlayersCount(),
+                gameDto.getWordsForPlayer(),
+                gameDto.getTurnTime(),
+                codeWord);
     }
 
     public int getMaxWordCount() {

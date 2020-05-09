@@ -26,7 +26,7 @@ public class GameServiceImpl implements GameService {
         } while (gameRepository.findByCodeWord(codeWord).isPresent());
 
         // TODO здесь есть потоконебезопасность, но шанс совпадения кодовых слов довольно мал
-        Game game = Game.createNew(gameDto.getPlayersCount(), gameDto.getWordsForPlayer(), codeWord);
+        Game game = Game.createNew(gameDto, codeWord);
         return gameRepository.save(game);
     }
 

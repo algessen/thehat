@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class GameDto {
     private int playersCount;
     private int wordsForPlayer;
+    private int turnTime;
 }

@@ -25,7 +25,7 @@ class WordListRepositoryImplTest {
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
-    private static final Game GAME = new Game(1L, 2, 2, "CODE_WORD");
+    private static final Game GAME = new Game(1L, 2, 2, 10,"CODE_WORD");
     private static final List<String> LIST1 = Arrays.asList("one", "two");
     private static final List<String> LIST2 = Arrays.asList("three", "four");
     private static final List<String> BIG_LIST = Arrays.asList("one", "two", "three", "four");

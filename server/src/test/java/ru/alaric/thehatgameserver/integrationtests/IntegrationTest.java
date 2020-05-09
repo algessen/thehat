@@ -1,6 +1,5 @@
 package ru.alaric.thehatgameserver.integrationtests;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -16,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import ru.alaric.thehatgameserver.embeddedredis.EmbeddedRedisTestConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static ru.alaric.thehatgameserver.testutils.TestUtils.createTestGameJson;
 
 @SpringBootTest(classes = EmbeddedRedisTestConfiguration.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -32,22 +32,16 @@ public class IntegrationTest {
 
     private static final int PLAYERS_COUNT = 3;
     private static final int WORDS_FOR_PLAYER = 5;
-
-    private JSONObject createTestGameJson() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("playersCount", PLAYERS_COUNT);
-        jsonObject.put("wordsForPlayer", WORDS_FOR_PLAYER);
-        return jsonObject;
-    }
+    private static final int TURN_TIME = 10;
 
     @Test
     @Order(0)
     void shouldCreateGame() throws Exception{
-        JSONObject gameJson = createTestGameJson();
+        JSONObject gameJson = createTestGameJson(PLAYERS_COUNT, WORDS_FOR_PLAYER, TURN_TIME);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> httpEntity = new HttpEntity<>(gameJson.toString(), headers);
-        ResponseEntity<?> responseEntity = restTemplate.exchange(
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
                 UriComponentsBuilder.fromHttpUrl("http://localhost").port(port).path("/game").build().toUri(),
                 HttpMethod.POST,
                 httpEntity,
@@ -59,6 +53,10 @@ public class IntegrationTest {
 
         assertThat(responseEntity.getHeaders().getLocation())
                 .isNotNull();
+
+        JSONObject result = new JSONObject(responseEntity.getBody());
+        assertThat(result)
+                .matches(r -> PLAYERS_COUNT == r.optInt("playersCount"));
 
         gamePath = responseEntity.getHeaders().getLocation().getPath();
     }

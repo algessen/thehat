@@ -25,7 +25,7 @@ public class GameController {
         UriComponents uriComponents = builder.path("/game/{codeWord}").buildAndExpand(game.getCodeWord());
         return ResponseEntity
                 .created(uriComponents.toUri())
-                .build();
+                .body(game);
     }
 
     @GetMapping("/game/{codeWord}")

@@ -19,11 +19,12 @@ class GameRepositoryTest {
 
     private static final int PLAYERS_COUNT = 5;
     private static final int WORDS_COUNT = 4;
+    private static final int TURN_TIME = 10;
     private static final String CODE_WORD = "CODE_WORD";
 
     @Test
     void shouldAddGame() {
-        Game game = Game.createNew(PLAYERS_COUNT, WORDS_COUNT, CODE_WORD);
+        Game game = Game.createNew(PLAYERS_COUNT, WORDS_COUNT, TURN_TIME, CODE_WORD);
         Game savedGame = repository.save(game);
         assertThat(savedGame)
                 .isNotNull();

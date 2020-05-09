@@ -23,7 +23,7 @@ class GameServiceImplTest {
     private CodeWordService codeWordService;
 
     private static final String CODE_WORD = "CodeWord";
-    private static final GameDto GAME_DTO = new GameDto(2, 2);
+    private static final GameDto GAME_DTO = new GameDto(2, 2, 10);
 
     @BeforeEach
     void init() {
@@ -39,7 +39,7 @@ class GameServiceImplTest {
         when(gameRepository.findByCodeWord(CODE_WORD)).thenReturn(Optional.empty());
         Game resultGame = mock(Game.class);
         when(gameRepository.save(
-                eq(Game.createNew(GAME_DTO.getPlayersCount(), GAME_DTO.getWordsForPlayer(), CODE_WORD))))
+                eq(Game.createNew(GAME_DTO, CODE_WORD))))
                 .thenReturn(resultGame);
 
         assertThat(gameService.createNew(GAME_DTO)).isEqualTo(resultGame);
