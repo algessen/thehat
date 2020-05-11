@@ -3,6 +3,7 @@ package ru.alaric.thehatgameserver.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.alaric.thehatgameserver.dto.GameDto;
+import ru.alaric.thehatgameserver.dto.GameDtoUtils;
 import ru.alaric.thehatgameserver.exceptions.ListIsAlreadyFullException;
 import ru.alaric.thehatgameserver.exceptions.NoSuchGameException;
 import ru.alaric.thehatgameserver.models.Game;
@@ -26,7 +27,7 @@ public class GameServiceImpl implements GameService {
         } while (gameRepository.findByCodeWord(codeWord).isPresent());
 
         // TODO здесь есть потоконебезопасность, но шанс совпадения кодовых слов довольно мал
-        Game game = Game.createNew(gameDto, codeWord);
+        Game game = GameDtoUtils.createFromDto(gameDto, codeWord);
         return gameRepository.save(game);
     }
 

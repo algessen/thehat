@@ -3,6 +3,7 @@ package ru.alaric.thehatgameserver.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.alaric.thehatgameserver.dto.GameDto;
+import ru.alaric.thehatgameserver.dto.GameDtoUtils;
 import ru.alaric.thehatgameserver.exceptions.ListIsAlreadyFullException;
 import ru.alaric.thehatgameserver.exceptions.NoSuchGameException;
 import ru.alaric.thehatgameserver.models.Game;
@@ -39,7 +40,7 @@ class GameServiceImplTest {
         when(gameRepository.findByCodeWord(CODE_WORD)).thenReturn(Optional.empty());
         Game resultGame = mock(Game.class);
         when(gameRepository.save(
-                eq(Game.createNew(GAME_DTO, CODE_WORD))))
+                eq(GameDtoUtils.createFromDto(GAME_DTO, CODE_WORD))))
                 .thenReturn(resultGame);
 
         assertThat(gameService.createNew(GAME_DTO)).isEqualTo(resultGame);

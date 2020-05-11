@@ -11,4 +11,11 @@ public class GameDto {
     private int playersCount;
     private int wordsForPlayer;
     private int turnTime;
+    private String codeWord;
+
+    public GameDto(int playersCount, int wordsForPlayer, int turnTime) {
+        this.playersCount = playersCount;
+        this.wordsForPlayer = wordsForPlayer;
+        this.turnTime = turnTime;
+    }
 }

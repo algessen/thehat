@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.alaric.thehatgameserver.dto.GameDto;
+import ru.alaric.thehatgameserver.dto.GameDtoUtils;
 import ru.alaric.thehatgameserver.exceptions.ListIsAlreadyFullException;
 import ru.alaric.thehatgameserver.exceptions.NoSuchGameException;
 import ru.alaric.thehatgameserver.models.Game;
@@ -25,12 +26,13 @@ public class GameController {
         UriComponents uriComponents = builder.path("/game/{codeWord}").buildAndExpand(game.getCodeWord());
         return ResponseEntity
                 .created(uriComponents.toUri())
-                .body(game);
+                .body(GameDtoUtils.createFromGame(game));
     }
 
     @GetMapping("/game/{codeWord}")
-    void getGame(@PathVariable("codeWord") String codeWord) throws NoSuchGameException {
-        gameService.findByCodeWord(codeWord);
+    public GameDto getGame(@PathVariable("codeWord") String codeWord) throws NoSuchGameException {
+        Game game = gameService.findByCodeWord(codeWord);
+        return GameDtoUtils.createFromGame(game);
     }
 
     @PostMapping("/game/{codeWord}/words")

@@ -1,5 +1,6 @@
 package ru.alaric.thehatgameserver.integrationtests;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -63,8 +64,8 @@ public class IntegrationTest {
 
     @Order(10)
     @Test
-    void shouldGetGame() {
-        ResponseEntity<?> responseEntity = restTemplate.exchange(
+    void shouldGetGame() throws JSONException {
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
                 UriComponentsBuilder.fromHttpUrl("http://localhost").port(port).path(gamePath)
                         .encode().build().toUri(),
                 HttpMethod.GET,
@@ -73,6 +74,12 @@ public class IntegrationTest {
         );
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        JSONObject result = new JSONObject(responseEntity.getBody());
+        assertThat(result)
+                .matches(r -> PLAYERS_COUNT == r.optInt("playersCount"))
+                .matches(r -> WORDS_FOR_PLAYER == r.optInt("wordsForPlayer"))
+                .matches(r -> TURN_TIME == r.optInt("turnTime"));
     }
 
     @Order(20)
